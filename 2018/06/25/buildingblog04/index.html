@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="如何正确的配置hexo静态博客一.前言   静态博客最终章，这一篇说完了，大家就基本算是熟练掌握hexo的用法了，虽然hexo是nodejs搭建的，但其实它已经封装的很好了，基本就是使用的问题而已了，不得不说台湾小伙伴开发的这整套hexo静态博客框架还是很好用的，里面很多年设计思想都是很前瞻性了。废话不多说，我们直接开始进行hexo的最终章配置篇。 二.修改主配置​    主配置就是hexo文件工">
+<meta name="keywords" content="hexo,github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静态博客搭建04">
+<meta property="og:url" content="http://zhangxuanming.com/2018/06/25/buildingblog04/index.html">
+<meta property="og:site_name" content="Hioleair&#39;s Blogs">
+<meta property="og:description" content="如何正确的配置hexo静态博客一.前言   静态博客最终章，这一篇说完了，大家就基本算是熟练掌握hexo的用法了，虽然hexo是nodejs搭建的，但其实它已经封装的很好了，基本就是使用的问题而已了，不得不说台湾小伙伴开发的这整套hexo静态博客框架还是很好用的，里面很多年设计思想都是很前瞻性了。废话不多说，我们直接开始进行hexo的最终章配置篇。 二.修改主配置​    主配置就是hexo文件工">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E9%85%8D%E7%BD%AE.jpg">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/mater2.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/project.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/over.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/0625first.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/0625404.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/0625newpage.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/0625dier.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/0625disan.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/0625disi.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/0625zuih.png">
+<meta property="og:updated_time" content="2018-06-26T13:51:06.374Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="静态博客搭建04">
+<meta name="twitter:description" content="如何正确的配置hexo静态博客一.前言   静态博客最终章，这一篇说完了，大家就基本算是熟练掌握hexo的用法了，虽然hexo是nodejs搭建的，但其实它已经封装的很好了，基本就是使用的问题而已了，不得不说台湾小伙伴开发的这整套hexo静态博客框架还是很好用的，里面很多年设计思想都是很前瞻性了。废话不多说，我们直接开始进行hexo的最终章配置篇。 二.修改主配置​    主配置就是hexo文件工">
+<meta name="twitter:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E9%85%8D%E7%BD%AE.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://zhangxuanming.com/2018/06/25/buildingblog04/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>静态博客搭建04 | Hioleair's Blogs</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hioleair's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-about"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-categories"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archives"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhangxuanming.com/2018/06/25/buildingblog04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hioleair">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hioleair's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">静态博客搭建04
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-25 20:23:38" itemprop="dateCreated datePublished" datetime="2018-06-25T20:23:38+08:00">2018-06-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-06-26 21:51:06" itemprop="dateModified" datetime="2018-06-26T21:51:06+08:00">2018-06-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术栈/" itemprop="url" rel="index"><span itemprop="name">技术栈</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="如何正确的配置hexo静态博客"><a href="#如何正确的配置hexo静态博客" class="headerlink" title="如何正确的配置hexo静态博客"></a>如何正确的配置hexo静态博客</h1><h2 id="一-前言"><a href="#一-前言" class="headerlink" title="一.前言"></a>一.前言</h2><p>   静态博客最终章，这一篇说完了，大家就基本算是熟练掌握hexo的用法了，虽然hexo是nodejs搭建的，但其实它已经封装的很好了，基本就是使用的问题而已了，不得不说台湾小伙伴开发的这整套hexo静态博客框架还是很好用的，里面很多年设计思想都是很前瞻性了。废话不多说，我们直接开始进行hexo的最终章配置篇。</p>
+<h2 id="二-修改主配置"><a href="#二-修改主配置" class="headerlink" title="二.修改主配置"></a>二.修改主配置</h2><p>​    主配置就是hexo文件工程的config.yml文件，如果不清楚的小伙伴可以看一下上一篇。其实config.yml的配置文件和java里面的.properties文件还蛮像的，就是简单将配置文件以键值对的方式保存下来，专业点就是俗称的持久化吧，但是,yml文件更好用的一点在于它的键值对底下可以tab加子集键值对，这样就可以同样大配置里面只要修改里面小配置就行，而且清晰明了很方便的。</p>
+<p>为修改前的配置文件及配置文件介绍:</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E9%85%8D%E7%BD%AE.jpg" alt=""></p>
+<p>修改配置文件的相关内容及部署以后的显示效果</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/mater2.png" alt=""><img src="http://p7u7bb0ej.bkt.clouddn.com/project.png" alt=""></p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/over.png" alt=""></p>
+<h2 id="三-修改主题配置"><a href="#三-修改主题配置" class="headerlink" title="三.修改主题配置"></a>三.修改主题配置</h2><p>​    主题文件修改的内容主要就是新增一些分类和标签及个人主页，还有一些小样式的修改。</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/0625first.png" alt="">首先我们找到主题配置的config.yml，然后我们把menu菜单的其他被注释掉的about，tags，categories都放开，然后本地运行一些你就能看到新增的状态栏。</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/0625404.png" alt=""></p>
+<p>不过都是cannot get的状态，因为我们还没有new 出配置文件，只是打开了状态栏而已。同学们还记得我们当初新建文章除了直接在post新建.md文件还有什么办法？hexo new “new article”还记得吗？这里我们是新建页面所以我们要在工程文件下面hexo new page about，需要新生成的page主要就是about，tags，categories。</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/0625newpage.png" alt=""></p>
+<p>​    新建的page会在source文件夹下来有对应的文件夹和.md文件，其实about就和正常些博客一样，写一下自己的介绍就行，tags和categories就需要配置一下了，配置如图。</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/0625dier.png" alt=""></p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/0625disan.png" alt=""></p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/0625disi.png" alt=""></p>
+<h2 id="四-其他细节问题"><a href="#四-其他细节问题" class="headerlink" title="四.其他细节问题"></a>四.其他细节问题</h2><p>​    其他细节问题就不单独一一例举出来了，主要就是一些部署和其他配置的小细节，给大家整理汇总链接如下：</p>
+<p>我们现在搭建完的博客主页是会把最新的文章全部显示出来的，如果我们想要不显示全文可以看下面的教程</p>
+<p>​    <a href="https://www.jianshu.com/p/393d067dba8d" target="_blank" rel="noopener">Hexo之next主题设置首页不显示全文</a></p>
+<p>这里的配置可以说非常全了，怎么设置访问量，加动态效果，各种其他小配置，自己修改swig 的js模板引擎</p>
+<p>​    <a href="http://shenzekun.cn/hexo%E7%9A%84next%E4%B8%BB%E9%A2%98%E4%B8%AA%E6%80%A7%E5%8C%96%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html" target="_blank" rel="noopener">next主题其他细节配置</a></p>
+<p>如果绑定自己的域名的话，需要配置和注意的事情，下载hexo-generator-cname这样就不会每次部署都覆盖自己的cname</p>
+<p>​    <a href="https://www.cnblogs.com/chengxs/p/7496265.html" target="_blank" rel="noopener">域名相关细节</a></p>
+<p>还有一个细节就是标题和#号一定要有空格，不然引擎解析可能没有当做标题，会出现##这样，而没有标题加粗加大的效果了。</p>
+<p>差不多就这些了，其他细节以后想到再补充吧！</p>
+<p>最后差不多就是这样吧!</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/0625zuih.png" alt=""></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>技术共享,支持原创,欢迎打赏</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="hioleair 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="hioleair 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hexo/" rel="tag"># hexo</a>
+          
+            <a href="/tags/github/" rel="tag"># github</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/20/buildingblog03/" rel="next" title="静态博客搭建03">
+                <i class="fa fa-chevron-left"></i> 静态博客搭建03
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="hioleair" />
+            
+              <p class="site-author-name" itemprop="name">hioleair</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/hioleair" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/hioleair" target="_blank" title="Twitter"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何正确的配置hexo静态博客"><span class="nav-number">1.</span> <span class="nav-text">如何正确的配置hexo静态博客</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-前言"><span class="nav-number">1.1.</span> <span class="nav-text">一.前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-修改主配置"><span class="nav-number">1.2.</span> <span class="nav-text">二.修改主配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-修改主题配置"><span class="nav-number">1.3.</span> <span class="nav-text">三.修改主题配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-其他细节问题"><span class="nav-number">1.4.</span> <span class="nav-text">四.其他细节问题</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hioleair</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.2.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="如何使用hexo搭建独立静态博客一.前言   上篇《如何利用github免费快速搭建个人静态博客》已经说完了安装和启动，这篇我们详细讲解一下如何部署服务和发布内容。 二.注册github账号​        如果你已经注册过github可以跳过这一步。 ​       访问github网站：http://github.com 这里简单介绍一下github网站，git是linux内核开发者，就是我们">
+<meta name="keywords" content="hexo,github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静态博客搭建02">
+<meta property="og:url" content="http://zhangxuanming.com/2018/05/21/buildingblog02/index.html">
+<meta property="og:site_name" content="Hioleair&#39;s Blogs">
+<meta property="og:description" content="如何使用hexo搭建独立静态博客一.前言   上篇《如何利用github免费快速搭建个人静态博客》已经说完了安装和启动，这篇我们详细讲解一下如何部署服务和发布内容。 二.注册github账号​        如果你已经注册过github可以跳过这一步。 ​       访问github网站：http://github.com 这里简单介绍一下github网站，git是linux内核开发者，就是我们">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E5%A1%AB%E5%86%99%E4%BF%A1%E6%81%AF.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E7%BB%A7%E7%BB%AD.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E7%AC%AC%E4%B8%89%E6%AD%A5.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E5%9B%9B.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E9%AA%8C%E8%AF%81%E9%82%AE%E7%AE%B1.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E5%85%AD.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E5%85%AB.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E4%B9%9D.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/git%E5%9C%B0%E5%9D%80.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E4%BF%AE%E6%94%B91.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/npminstall.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E9%83%A8%E7%BD%B2%E5%91%BD%E4%BB%A41.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E7%AC%AC%E4%B8%80%E6%AD%A5.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E7%AC%AC%E4%BA%8C%E6%AD%A5.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%AE%8C%E6%88%90.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E6%9C%80%E5%90%8E%E9%85%8D%E7%BD%AE1.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E6%9C%80%E5%90%8E%E9%85%8D%E7%BD%AE2.png">
+<meta property="og:updated_time" content="2018-05-22T12:23:17.946Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="静态博客搭建02">
+<meta name="twitter:description" content="如何使用hexo搭建独立静态博客一.前言   上篇《如何利用github免费快速搭建个人静态博客》已经说完了安装和启动，这篇我们详细讲解一下如何部署服务和发布内容。 二.注册github账号​        如果你已经注册过github可以跳过这一步。 ​       访问github网站：http://github.com 这里简单介绍一下github网站，git是linux内核开发者，就是我们">
+<meta name="twitter:image" content="http://p7u7bb0ej.bkt.clouddn.com/%E5%A1%AB%E5%86%99%E4%BF%A1%E6%81%AF.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://zhangxuanming.com/2018/05/21/buildingblog02/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>静态博客搭建02 | Hioleair's Blogs</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hioleair's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-about"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-categories"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archives"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhangxuanming.com/2018/05/21/buildingblog02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hioleair">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hioleair's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">静态博客搭建02
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-05-21 21:23:38" itemprop="dateCreated datePublished" datetime="2018-05-21T21:23:38+08:00">2018-05-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-05-22 20:23:17" itemprop="dateModified" datetime="2018-05-22T20:23:17+08:00">2018-05-22</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术栈/" itemprop="url" rel="index"><span itemprop="name">技术栈</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="如何使用hexo搭建独立静态博客"><a href="#如何使用hexo搭建独立静态博客" class="headerlink" title="如何使用hexo搭建独立静态博客"></a>如何使用hexo搭建独立静态博客</h1><h2 id="一-前言"><a href="#一-前言" class="headerlink" title="一.前言"></a>一.前言</h2><p>   上篇《如何利用github免费快速搭建个人静态博客》已经说完了安装和启动，这篇我们详细讲解一下如何部署服务和发布内容。</p>
+<h2 id="二-注册github账号"><a href="#二-注册github账号" class="headerlink" title="二.注册github账号"></a>二.注册github账号</h2><p>​        如果你已经注册过github可以跳过这一步。</p>
+<p>​       访问github网站：<a href="http://github.com" target="_blank" rel="noopener">http://github.com</a> 这里简单介绍一下github网站，git是linux内核开发者，就是我们俗称的linux之父开发的用于管理分布式版本的控制系统，github就是支持且只支持git进行版本库托管，然后面向开源或私有项目的托管平台，任何人都可以注册账号发布你的开源代码在github免费托管，同时你也可以查到各种优秀的开源项目在github。</p>
+<p>​      好，了解了github以后，我们开始github的注册使用之旅，因为是国外的网站，所以github都是英文，不过不用担心我这边一步一步详细的教大家如何注册。</p>
+<p>打开网页是这样的，然后username填写自己的用户名，不可以和别人重名，email填写自己有效的邮件地址，然后是password密码，如果内容都是正确的后面会有绿色的小勾，然后点击sign up for github即可。</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E5%A1%AB%E5%86%99%E4%BF%A1%E6%81%AF.png" alt="注册github"></p>
+<p>注册出来是这样子的，然后这些信息填不填写都没差，我们直接选择continue</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E7%BB%A7%E7%BB%AD.png" alt="注册"></p>
+<p>这里我们直接跳过选择skip this step就行</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E7%AC%AC%E4%B8%89%E6%AD%A5.png" alt="跳过"></p>
+<p>然后就是这样了</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E5%9B%9B.png" alt="验证"></p>
+<p>这时候需要登录你刚刚填写的邮箱进行验证了，打开github给你发的链接，然后输入用户名和密码点击sign in登录即可，这样你就算是正式完成了注册。(我是手机登录好的邮箱就懒得在电脑登录重新邮箱了，电脑登录的邮箱操作一样，打开github发你链接，登录你注册github的登录名和密码)</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E9%AA%8C%E8%AF%81%E9%82%AE%E7%AE%B1.png" alt=""></p>
+<p>你重新再电脑端登录进来就可以开始新建自己的仓库就是new repository了，大概就是点击你的头像旁边的+号，选择new respository。</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E5%85%AD.png" alt=""></p>
+<p>然后给你仓库起名字，随便叫什么都行，不过如果你不熟悉github并且这是搭建博客用的最好还是和我这样叫github.io吧，然后create repository就可以创建成功了，接下来我们只要把本地的hexo博客发布到我们仓库，然后很快你就能在网页上访问到自己的博客了</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E5%85%AB.png" alt=""></p>
+<p>成功create repository以后，会进到这个界面，我们选择http点击复制。</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E4%B9%9D.png" alt=""></p>
+<p>​    然后新建一个text文件保存这个地址，接下来我们部署服务会用到的。</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/git%E5%9C%B0%E5%9D%80.png" alt=""></p>
+<h2 id="三-部署发布服务"><a href="#三-部署发布服务" class="headerlink" title="三.部署发布服务"></a>三.部署发布服务</h2><h3 id="1-本地hexo配置更改"><a href="#1-本地hexo配置更改" class="headerlink" title="1.本地hexo配置更改"></a>1.本地hexo配置更改</h3><p>​           部署之前，我们找到hexo的配置文件进行配置，就是在我们放在E盘的实例化的hexo文件夹，文件结构如下，选择_config.yml，（扩展小知识：这里给大家介绍一下.yml格式的文件是目前比较常见流行的配置文件格式，spring boot也一般都是用.yml格式的配置文件，它比.xml的配置文件要简洁很多，它一般就是像这样  主键:  配置信息，如果带有子配置信息就会在tab键对齐的下面又带一对键值对，这里的配置信息前面一定要带有空格，不然就会报错，因为以后自定义hexo皮肤主题和其他配置都会更改配置文件，所以特别强调一下，这次我们只有注意一下就行）</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.png" alt=""></p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E4%BF%AE%E6%94%B91.png" alt=""></p>
+<h3 id="2-hexo发布命令"><a href="#2-hexo发布命令" class="headerlink" title="2.hexo发布命令"></a>2.hexo发布命令</h3><p>这个时候，我们已经完成了部署任务的百分之九十九了，是不是很简单，现在我们只需要简单俩条条命令就能完成部署，下面就是见证奇迹的时候，</p>
+<p>第一条命令就是npm install hexo-deployer-git  –save</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/npminstall.png" alt=""></p>
+<p>这条命令要在cmd命令框下运行，cmd下面才能调出npm的环境变量，在git bash会失败，请注意</p>
+<p>第二条命令就是hexo clean&amp;&amp;hexo g&amp;&amp;hexo d </p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E9%83%A8%E7%BD%B2%E5%91%BD%E4%BB%A41.png" alt=""></p>
+<p>这条命令要在git bash下运行，因为要用到git，运行出来会要你输入用户名和密码，用户名就是你注册github的名字，密码就是你的登录密码，等出现INFO deploy done：git提示的时候说明部署成功</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E7%AC%AC%E4%B8%80%E6%AD%A5.png" alt=""></p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E7%AC%AC%E4%BA%8C%E6%AD%A5.png" alt=""></p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%AE%8C%E6%88%90.png" alt=""></p>
+<p>我来大概解释一下命令哈，第一条就是hexo配套的发布工具，npm就是包管理工具命令，我们这条命令就是安装hexo-deployer-git，有了它hexo d部署的时候才不会出错。</p>
+<p>第二条命令就是&amp;&amp;是把三个命令同时联结一起执行的意思，所以其实第二条是走了三个步骤，hexo clean 清理缓存，hexo g重新生成静态文件，hexo d发布。</p>
+<h3 id="3-github的最后配置"><a href="#3-github的最后配置" class="headerlink" title="3.github的最后配置"></a>3.github的最后配置</h3><p>​         然后我们登录github，进行最后的配置，找到自己配置的仓库，然后点击setting在设置里面GitHub Pages选择对source进行配置选择master branch等待网页刷新即可看到你生成的个人博客了</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E6%9C%80%E5%90%8E%E9%85%8D%E7%BD%AE1.png" alt=""></p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/%E6%9C%80%E5%90%8E%E9%85%8D%E7%BD%AE2.png" alt=""></p>
+<h2 id="四-购买域名并配置"><a href="#四-购买域名并配置" class="headerlink" title="四.购买域名并配置"></a>四.购买域名并配置</h2><p>​        这一步不是必须的一步了，因为其实你的网站已经用了，不过你的网站地址目前是github给你分配的二级域名，如果你觉得二级域名不够高级，你可以自己买一个域名，然后再配置DNS绑定到你的地址就可以了。</p>
+<p>​        没想到写博客比我想象要麻烦很多，域名购买和配置我放下一章吧，还有如何使用hexo写文章以及配置hexo主题，设置各种样式，我也在下一章讲解，如果讲的完的话。</p>
+<p>​        谢谢各位小伙伴的关注，你们如果发现bug或者不严谨的地方可以反馈给我，反正我也应该懒得改，不过万一呢，哈哈哈，最后还是求一波打赏。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>技术共享,支持原创,欢迎打赏</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="hioleair 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="hioleair 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hexo/" rel="tag"># hexo</a>
+          
+            <a href="/tags/github/" rel="tag"># github</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/05/buildingblog01/" rel="next" title="静态博客搭建01">
+                <i class="fa fa-chevron-left"></i> 静态博客搭建01
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/20/buildingblog03/" rel="prev" title="静态博客搭建03">
+                静态博客搭建03 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="hioleair" />
+            
+              <p class="site-author-name" itemprop="name">hioleair</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/hioleair" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/hioleair" target="_blank" title="Twitter"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何使用hexo搭建独立静态博客"><span class="nav-number">1.</span> <span class="nav-text">如何使用hexo搭建独立静态博客</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-前言"><span class="nav-number">1.1.</span> <span class="nav-text">一.前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-注册github账号"><span class="nav-number">1.2.</span> <span class="nav-text">二.注册github账号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-部署发布服务"><span class="nav-number">1.3.</span> <span class="nav-text">三.部署发布服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-本地hexo配置更改"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.本地hexo配置更改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-hexo发布命令"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.hexo发布命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-github的最后配置"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.github的最后配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-购买域名并配置"><span class="nav-number">1.4.</span> <span class="nav-text">四.购买域名并配置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hioleair</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.2.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
