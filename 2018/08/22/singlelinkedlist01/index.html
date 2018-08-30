@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="数据结构系列之单链表案例及实践1.前言​    从这篇博客开始，我针对数据结构与算法整理总结一些代码实践，希望能加深自己对代码的理解，也能帮助到其他小伙伴。 2.数据结构简介​    首先，我简单说明一下为什么数据结构在软件开发中如此重要，因为程序本质就是数据结构加算法，只不过现在很多语言对数据处理都有了很好的调用包帮大家封装好了相应数据，所以实际开发的过程中可能用到数据结构的计划并不多，但是常用">
+<meta name="keywords" content="单链表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构之单链表详解">
+<meta property="og:url" content="http://zhangxuanming.com/2018/08/22/singlelinkedlist01/index.html">
+<meta property="og:site_name" content="Hioleair&#39;s Blogs">
+<meta property="og:description" content="数据结构系列之单链表案例及实践1.前言​    从这篇博客开始，我针对数据结构与算法整理总结一些代码实践，希望能加深自己对代码的理解，也能帮助到其他小伙伴。 2.数据结构简介​    首先，我简单说明一下为什么数据结构在软件开发中如此重要，因为程序本质就是数据结构加算法，只不过现在很多语言对数据处理都有了很好的调用包帮大家封装好了相应数据，所以实际开发的过程中可能用到数据结构的计划并不多，但是常用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/0830linklist.png">
+<meta property="og:updated_time" content="2018-08-30T14:14:11.245Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构之单链表详解">
+<meta name="twitter:description" content="数据结构系列之单链表案例及实践1.前言​    从这篇博客开始，我针对数据结构与算法整理总结一些代码实践，希望能加深自己对代码的理解，也能帮助到其他小伙伴。 2.数据结构简介​    首先，我简单说明一下为什么数据结构在软件开发中如此重要，因为程序本质就是数据结构加算法，只不过现在很多语言对数据处理都有了很好的调用包帮大家封装好了相应数据，所以实际开发的过程中可能用到数据结构的计划并不多，但是常用">
+<meta name="twitter:image" content="http://p7u7bb0ej.bkt.clouddn.com/0830linklist.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://zhangxuanming.com/2018/08/22/singlelinkedlist01/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据结构之单链表详解 | Hioleair's Blogs</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hioleair's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-about"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-categories"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archives"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhangxuanming.com/2018/08/22/singlelinkedlist01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hioleair">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hioleair's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据结构之单链表详解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-08-22 19:23:38" itemprop="dateCreated datePublished" datetime="2018-08-22T19:23:38+08:00">2018-08-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-08-30 22:14:11" itemprop="dateModified" datetime="2018-08-30T22:14:11+08:00">2018-08-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="数据结构系列之单链表案例及实践"><a href="#数据结构系列之单链表案例及实践" class="headerlink" title="数据结构系列之单链表案例及实践"></a>数据结构系列之单链表案例及实践</h1><h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h2><p>​    从这篇博客开始，我针对数据结构与算法整理总结一些代码实践，希望能加深自己对代码的理解，也能帮助到其他小伙伴。</p>
+<h2 id="2-数据结构简介"><a href="#2-数据结构简介" class="headerlink" title="2.数据结构简介"></a>2.数据结构简介</h2><p>​    首先，我简单说明一下为什么数据结构在软件开发中如此重要，因为程序本质就是数据结构加算法，只不过现在很多语言对数据处理都有了很好的调用包帮大家封装好了相应数据，所以实际开发的过程中可能用到数据结构的计划并不多，但是常用的数据结构还是蕴含着编程思想的精华。</p>
+<p>​    那么，是数据结构呢，按照学术的定义就是相互之间存在一种或多种特定关系的数据元素的集合。常见的数据结构就是数组，链表，树，还有哈希表。队列和栈都是可以通过数组和链表做功能实现的，队列就可以通过数组取值实现先进先出就实现了队列功能，当然链表也可以实现先进先出，这样就是链表队列了，同样的如果对数组和链表实现先进后出实现就成为了栈，在相关数据结构博客后面我会教大家如何利用数组和链表实现队列及栈的。本篇博客，我们先来了解和实现链表数据结构。</p>
+<p>​    其实链表本身设计也可以玩出非常多的花样，象linux内核相关数据结构就用了一种让相应数据包含链表本身，从而实现对各种不同类型数据封装兼容的设计思想。如果不能使各种数据本身去扩展实现链表，那么利用指针指向数据本身再封装成链表的思想简直可以说非常哲学很精华了。这也是linux之父，linus的设计巧妙之所在呀！好了我说了这么多，数据结构的好处和妙用，下面我们就开始今天的数据结构之单链表吧。</p>
+<h2 id="3-单链表实现及使用"><a href="#3-单链表实现及使用" class="headerlink" title="3.单链表实现及使用"></a>3.单链表实现及使用</h2><h3 id="3-1单链表结构"><a href="#3-1单链表结构" class="headerlink" title="3.1单链表结构"></a>3.1单链表结构</h3><p>我们设计一个简单的单链表结构，如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> &#123;</span></span><br><span class="line">     <span class="keyword">int</span> value;</span><br><span class="line">     <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">next</span>;</span></span><br><span class="line"> &#125;;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> , * <span class="title">list</span>;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/0830linklist.png" alt=""></p>
+<p>phead为单链表的头指针，它指向表中的第一个节点，头结点的数据可以不存储然后信息，也可以设计成存储线性表长度等附加信息。下面我们学习如何使用链表：</p>
+<h3 id="3-2打印单链表"><a href="#3-2打印单链表" class="headerlink" title="3.2打印单链表"></a>3.2打印单链表</h3><p>首先，我们可以利用链表打印数据</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*我们开始创建链表并按顺序打印链表的value，开始第一次的链表使用*/</span></span><br><span class="line"><span class="function">ListNode *<span class="title">creat</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    ListNode *phead, *p1, *p2;</span><br><span class="line">    <span class="comment">/*head用来标记链表，p1总是用来指向新分配的内存空间，</span></span><br><span class="line"><span class="comment">    p2总是指向尾结点，并通过p2来链入新分配的结点*/</span></span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    phead = <span class="literal">NULL</span>;</span><br><span class="line">    p2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        p1 = (ListNode *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ListNode));</span><br><span class="line">        <span class="comment">/*动态分配内存空间，并数据转换为(struct LNode)类型*/</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"请输入链表中的第%d个数："</span>, i);</span><br><span class="line">        scanf_s(<span class="string">"%d"</span>, &amp;a);</span><br><span class="line">        p1-&gt;data = a;</span><br><span class="line">        <span class="keyword">if</span> (phead == <span class="literal">NULL</span>)<span class="comment">/*指定链表的头指针*/</span></span><br><span class="line">        &#123;</span><br><span class="line">            phead = p1;</span><br><span class="line">            p2 = p1;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            p2-&gt;next = p1;</span><br><span class="line">            p2 = p1;</span><br><span class="line">        &#125;</span><br><span class="line">        p2-&gt;next = <span class="literal">NULL</span>;<span class="comment">/*尾结点的后继指针为NULL(空)*/</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> phead;<span class="comment">/*返回链表的头指针*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    ListNode *q;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"请输入链表的长度：/n"</span>);</span><br><span class="line">    scanf_s(<span class="string">"%d"</span>, &amp;n);</span><br><span class="line">    q = creat(n);<span class="comment">/*链表的头指针(head)来标记整个链表*/</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"/n链表中的数据：/n"</span>);</span><br><span class="line">    <span class="keyword">while</span> (q)<span class="comment">/*直到结点q为NULL结束循环*/</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d "</span>, q-&gt;data);<span class="comment">/*输出结点中的值*/</span></span><br><span class="line">        q = q-&gt;next;<span class="comment">/*指向下一个结点*/</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-2单链表排序"><a href="#3-2单链表排序" class="headerlink" title="3.2单链表排序"></a>3.2单链表排序</h3><p>下面实现稍微复杂的一些的链表操作，比如单链表的排序，单独排序功能实现常见的就有插入排序，冒泡排序，简单排序，快速排序，这里我们简单实现一些插入排序好了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="built_in">list</span> linklist)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  	<span class="comment">/*如果链表没有元素，或者只有一个元素就直接返回*/</span></span><br><span class="line">    <span class="keyword">if</span>((linklist -&gt; next == <span class="literal">NULL</span>) || (linklist -&gt; next -&gt; next == <span class="literal">NULL</span>))</span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    ListNode * phead, * p1, * prep1, * p2, * prep2, * temp;</span><br><span class="line">    phead = linklist;</span><br><span class="line">    prep1 = phead -&gt; next;</span><br><span class="line">    p1 = prep1 -&gt; next;</span><br><span class="line">    <span class="comment">//prep1和p1是否需要手动后移</span></span><br><span class="line">    <span class="keyword">bool</span> flag;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(p1 != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;   </span><br><span class="line">        flag = <span class="literal">true</span>;</span><br><span class="line">        temp = p1; </span><br><span class="line">        <span class="comment">//由于是单向链表，所以只能从头部开始检索</span></span><br><span class="line">        <span class="keyword">for</span>(prep2 = head, p2 = prep2 -&gt; next; p2 != p1; prep2 = prep2 -&gt; next, p2 = p2 -&gt; next)</span><br><span class="line">        &#123;   </span><br><span class="line">            <span class="comment">//发现第一个较大值</span></span><br><span class="line">            <span class="keyword">if</span>(p2 -&gt; val &gt; p1 -&gt; val) </span><br><span class="line">            &#123;   </span><br><span class="line">                p1 = p1 -&gt; next;</span><br><span class="line">                prep1 -&gt; next = p1; </span><br><span class="line">                prep2 -&gt; next = temp;</span><br><span class="line">                temp -&gt; next = p2; </span><br><span class="line">                flag = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;   </span><br><span class="line">        &#125;   </span><br><span class="line">        <span class="comment">//手动后移prep1和p1</span></span><br><span class="line">        <span class="keyword">if</span>(flag)</span><br><span class="line">        &#123;   </span><br><span class="line">            prep1 = prep1 -&gt; next;</span><br><span class="line">            p1 = p1 -&gt; next;</span><br><span class="line">        &#125;   </span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-2单链表翻转"><a href="#3-2单链表翻转" class="headerlink" title="3.2单链表翻转"></a>3.2单链表翻转</h3><p>然后，我们试一下对链表进行翻转操作：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode <span class="title">reverse</span><span class="params">(<span class="built_in">list</span> linklist)</span><span class="comment">//两两节点之间不断交换</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  ListNode *phead；</span><br><span class="line">  phead = linklist;</span><br><span class="line">  <span class="comment">/*如果为空直接返回*/</span></span><br><span class="line">   <span class="keyword">if</span>(phead == <span class="literal">NULL</span> || phead-&gt;next == <span class="literal">NULL</span>)</span><br><span class="line">   <span class="keyword">return</span> phead;</span><br><span class="line">  <span class="comment">//定义俩个辅助指针变量</span></span><br><span class="line">   ListNode pre = <span class="literal">NULL</span>;</span><br><span class="line">   ListNode next = <span class="literal">NULL</span>;</span><br><span class="line">  <span class="comment">//开始进行翻转</span></span><br><span class="line">   <span class="keyword">while</span>(phead != <span class="literal">NULL</span>)&#123;</span><br><span class="line">       <span class="comment">//让辅助指针next指向下一个节点，如果是第一次进入就是指向头指针下一跳</span></span><br><span class="line">       next = phead-&gt;next;</span><br><span class="line">       <span class="comment">//让当前节点指向pre</span></span><br><span class="line">       phead-&gt;next = pre;</span><br><span class="line">       <span class="comment">//进行调换</span></span><br><span class="line">       pre = phead;</span><br><span class="line">       <span class="comment">//并让头节点指向下一跳</span></span><br><span class="line">       phead = next;</span><br><span class="line">&#125;</span><br><span class="line">  <span class="comment">//返回pre就是新生成的头结点</span></span><br><span class="line">    <span class="keyword">return</span> pre;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>好了，今天单链表讲到这里，我们下篇见！</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>技术共享,支持原创,欢迎打赏</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="hioleair 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="hioleair 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/单链表/" rel="tag"># 单链表</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/22/KingOfVaccine/" rel="next" title="疫苗之王(转载)">
+                <i class="fa fa-chevron-left"></i> 疫苗之王(转载)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="hioleair" />
+            
+              <p class="site-author-name" itemprop="name">hioleair</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/hioleair" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/hioleair" target="_blank" title="Twitter"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据结构系列之单链表案例及实践"><span class="nav-number">1.</span> <span class="nav-text">数据结构系列之单链表案例及实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-前言"><span class="nav-number">1.1.</span> <span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-数据结构简介"><span class="nav-number">1.2.</span> <span class="nav-text">2.数据结构简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-单链表实现及使用"><span class="nav-number">1.3.</span> <span class="nav-text">3.单链表实现及使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1单链表结构"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1单链表结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2打印单链表"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2打印单链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2单链表排序"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.2单链表排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2单链表翻转"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.2单链表翻转</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hioleair</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.2.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
