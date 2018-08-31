@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="数据结构系列之单链表二1.前言​    上篇博客讲到了单链表的实现和简单的使用，今天我们再详细介绍一下单链表。其实链表与数组不同在于，数组在分配内存的时候是连续的内存空间地址，是物理地址的连续，也可以叫做静态分配内存。链表，单向链表，双链表他的内存是动态的，也就是说你要用的时候，再生成下一个节点即可，不需要一次性就把内存要一块过去，可以一点点要，扩展也方便一些。但是数组的时间复杂度要小于链表，在一">
+<meta name="keywords" content="单链表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构之单链表详解二">
+<meta property="og:url" content="http://zhangxuanming.com/2018/08/31/singlelinkedlist02/index.html">
+<meta property="og:site_name" content="Hioleair&#39;s Blogs">
+<meta property="og:description" content="数据结构系列之单链表二1.前言​    上篇博客讲到了单链表的实现和简单的使用，今天我们再详细介绍一下单链表。其实链表与数组不同在于，数组在分配内存的时候是连续的内存空间地址，是物理地址的连续，也可以叫做静态分配内存。链表，单向链表，双链表他的内存是动态的，也就是说你要用的时候，再生成下一个节点即可，不需要一次性就把内存要一块过去，可以一点点要，扩展也方便一些。但是数组的时间复杂度要小于链表，在一">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-31T12:43:04.242Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构之单链表详解二">
+<meta name="twitter:description" content="数据结构系列之单链表二1.前言​    上篇博客讲到了单链表的实现和简单的使用，今天我们再详细介绍一下单链表。其实链表与数组不同在于，数组在分配内存的时候是连续的内存空间地址，是物理地址的连续，也可以叫做静态分配内存。链表，单向链表，双链表他的内存是动态的，也就是说你要用的时候，再生成下一个节点即可，不需要一次性就把内存要一块过去，可以一点点要，扩展也方便一些。但是数组的时间复杂度要小于链表，在一">
+
+
+
+
+
+
+  <link rel="canonical" href="http://zhangxuanming.com/2018/08/31/singlelinkedlist02/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据结构之单链表详解二 | Hioleair's Blogs</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hioleair's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-about"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-categories"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archives"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhangxuanming.com/2018/08/31/singlelinkedlist02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hioleair">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hioleair's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据结构之单链表详解二
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-08-31 19:23:38 / 修改时间：20:43:04" itemprop="dateCreated datePublished" datetime="2018-08-31T19:23:38+08:00">2018-08-31</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="数据结构系列之单链表二"><a href="#数据结构系列之单链表二" class="headerlink" title="数据结构系列之单链表二"></a>数据结构系列之单链表二</h1><h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h2><p>​    上篇博客讲到了单链表的实现和简单的使用，今天我们再详细介绍一下单链表。其实链表与数组不同在于，数组在分配内存的时候是连续的内存空间地址，是物理地址的连续，也可以叫做静态分配内存。链表，单向链表，双链表他的内存是动态的，也就是说你要用的时候，再生成下一个节点即可，不需要一次性就把内存要一块过去，可以一点点要，扩展也方便一些。但是数组的时间复杂度要小于链表，在一定情况下，效率更高，比如查询。但是删除元素的话，链表更方便一些，因为链表只有把next指针指向其他节点，就可以方便完成增加和删除，数组是需要换掉整个内存，整个数据都要移动。</p>
+<p>​    我们这篇就来讲一下如何对单链表进行元素删除操作，顺便实现一下数组数据的删除，让大家有直观的感受，对比俩种数据结构差异。</p>
+<h2 id="2-单链表删除"><a href="#2-单链表删除" class="headerlink" title="2.单链表删除"></a>2.单链表删除</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> ＜stdio.h＞</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> ＜malloc.h＞</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> ＜string.h＞</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 10 </span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">　<span class="keyword">char</span> name[<span class="number">20</span>];</span><br><span class="line">　<span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">link</span>;</span></span><br><span class="line">&#125;stud;</span><br><span class="line"></span><br><span class="line"><span class="function">stud * <span class="title">creat</span><span class="params">(<span class="keyword">int</span> n)</span> <span class="comment">/*建立新的链表的函数*/</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　stud *p,*h,*s;</span><br><span class="line">　<span class="keyword">int</span> i;</span><br><span class="line">　<span class="keyword">if</span>((h=(stud *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(stud)))==<span class="literal">NULL</span>)</span><br><span class="line">　&#123;</span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"不能分配内存空间!"</span>);</span><br><span class="line">　　<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">　&#125;</span><br><span class="line">　h-＞name[<span class="number">0</span>]=’\<span class="number">0</span>’;</span><br><span class="line">　h-＞link=<span class="literal">NULL</span>;</span><br><span class="line">　p=h;</span><br><span class="line">　<span class="keyword">for</span>(i=<span class="number">0</span>;i＜n;i )</span><br><span class="line">　&#123;</span><br><span class="line">　　<span class="keyword">if</span>((s= (stud *) <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(stud)))==<span class="literal">NULL</span>)</span><br><span class="line">　　&#123;</span><br><span class="line">　　　<span class="built_in">printf</span>(<span class="string">"不能分配内存空间!"</span>);</span><br><span class="line">　　　<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">　　&#125;</span><br><span class="line">　　p-＞link=s;</span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"请输入第%d个人的姓名"</span>,i <span class="number">1</span>);</span><br><span class="line">　　<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s-＞name);</span><br><span class="line">　　s-＞link=<span class="literal">NULL</span>;</span><br><span class="line">　　p=s;</span><br><span class="line">　&#125;</span><br><span class="line">　<span class="keyword">return</span>(h);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">stud * <span class="title">search</span><span class="params">(stud *h,<span class="keyword">char</span> *x)</span> <span class="comment">/*查找函数*/</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　stud *p;</span><br><span class="line">　<span class="keyword">char</span> *y;</span><br><span class="line">　p=h-＞link;</span><br><span class="line">　<span class="keyword">while</span>(p!=<span class="literal">NULL</span>)</span><br><span class="line">　&#123;</span><br><span class="line">　　y=p-＞name;</span><br><span class="line">　　<span class="keyword">if</span>(<span class="built_in">strcmp</span>(y,x)==<span class="number">0</span>)</span><br><span class="line">　　　<span class="keyword">return</span>(p);</span><br><span class="line">　　<span class="keyword">else</span> p=p-＞link;</span><br><span class="line">　&#125;</span><br><span class="line">　<span class="keyword">if</span>(p==<span class="literal">NULL</span>)</span><br><span class="line">　<span class="built_in">printf</span>(<span class="string">"没有查找到该数据!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">stud * <span class="title">search2</span><span class="params">(stud *h,<span class="keyword">char</span> *x)</span> <span class="comment">/*另一个查找函数，返回的是上一个查找函数的直接前驱结点的指针，*/</span></span></span><br><span class="line"><span class="function"><span class="comment">/*h为表头指针，x为指向要查找的姓名的指针*/</span></span></span><br><span class="line"><span class="function"><span class="comment">/*其实此函数的算法与上面的查找算法是一样的，只是多了一个指针s，并且s总是指向指针p所指向的结点的直接前驱，*/</span></span></span><br><span class="line"><span class="function"><span class="comment">/*结果返回s即是要查找的结点的前一个结点*/</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　stud *p,*s;</span><br><span class="line">　<span class="keyword">char</span> *y;</span><br><span class="line">　p=h-＞link;</span><br><span class="line">　s=h;</span><br><span class="line">　<span class="keyword">while</span>(p!=<span class="literal">NULL</span>)</span><br><span class="line">　&#123;</span><br><span class="line">　　y=p-＞name;</span><br><span class="line">　　<span class="keyword">if</span>(<span class="built_in">strcmp</span>(y,x)==<span class="number">0</span>)</span><br><span class="line">　　　<span class="keyword">return</span>(s);</span><br><span class="line">　　<span class="keyword">else</span></span><br><span class="line">　　&#123;</span><br><span class="line">　　　p=p-＞link;</span><br><span class="line">　　　s=s-＞link;</span><br><span class="line">　　&#125;</span><br><span class="line">　&#125;</span><br><span class="line">　<span class="keyword">if</span>(p==<span class="literal">NULL</span>)</span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"没有查找到该数据!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">del</span><span class="params">(stud *x,stud *y)</span> <span class="comment">/*删除函数，其中y为要删除的结点的指针，x为要删除的结点的前一个结点的指针*/</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　stud *s;</span><br><span class="line">　s=y;</span><br><span class="line">　x-＞link=y-＞link;</span><br><span class="line">　<span class="built_in">free</span>(s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">　<span class="keyword">int</span> number;</span><br><span class="line">　<span class="keyword">char</span> fullname[<span class="number">20</span>];</span><br><span class="line">　stud *head,*searchpoint,*forepoint;</span><br><span class="line">　number=N;</span><br><span class="line">　head=creat(number);</span><br><span class="line">　<span class="built_in">printf</span>(<span class="string">"请输入你要删除的人的姓名:"</span>);</span><br><span class="line">　<span class="built_in">scanf</span>(<span class="string">"%s"</span>,fullname);</span><br><span class="line">　searchpoint=search(head,fullname);</span><br><span class="line">　forepoint=search2(head,fullname);</span><br><span class="line">　del(forepoint,searchpoint);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假如我们已经知道了要删除的结点p的位置，那么要删除p结点时只要令p结点的前驱结点的链域由存储p结点的地址该为存储p的后继结点的地址，并回收p结点即可。</p>
+<h2 id="3-数组删除"><a href="#3-数组删除" class="headerlink" title="3.数组删除"></a>3.数组删除</h2><p>下面我们来实现一下数组的元素删除<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//查找和删除的业务逻辑</span></span><br><span class="line"> <span class="comment">/*****************************************</span></span><br><span class="line"><span class="comment"> *1、查找要删除数字的下标</span></span><br><span class="line"><span class="comment"> *2、从下标开始，后面一个覆盖前面一个数字</span></span><br><span class="line"><span class="comment"> *3、数组总长度-1</span></span><br><span class="line"><span class="comment"> ******************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">7</span>;                <span class="comment">//数组元素个数</span></span><br><span class="line">    <span class="keyword">double</span> Nums[] = &#123;<span class="number">423.2</span>, <span class="number">457.7</span>, <span class="number">409.0</span>, <span class="number">412.3</span>, <span class="number">407.6</span>, <span class="number">580.3</span>, <span class="number">320.5</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> JudgementNum;             <span class="comment">//用户进行下一步操作的判断数</span></span><br><span class="line">    <span class="keyword">double</span> InsertNum;             <span class="comment">//用户要插入的数据</span></span><br><span class="line">    <span class="keyword">double</span> DeleteNum;             <span class="comment">//用户要删除的数据</span></span><br><span class="line">    <span class="keyword">int</span> DeleteIndex = <span class="number">-1</span>;         <span class="comment">//删除某个数据的下标（索引），要给一个不可能的初值，方便判断。</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> i;                        <span class="comment">//循环变量</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"当前采集到的数据为：\n"</span>);</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; count; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%.2lf\t"</span>, Nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n\n是否需要删除部分数据？\n提示：输入数字1进行删除操作，输入数字0确认当前数据采集无误。\n"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"请输入："</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;JudgementNum);</span><br><span class="line">    <span class="keyword">if</span>(JudgementNum == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"\n请输入要删除的数据："</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%lf"</span>, &amp;DeleteNum);</span><br><span class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; count; i++)       <span class="comment">//穷举法，是常用算法之一</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(DeleteNum == Nums[i])     <span class="comment">//Nums[i]表示数组中的第i个元素</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">//找到后并记录当前数据的下标（索引）</span></span><br><span class="line">                DeleteIndex = i;</span><br><span class="line">                <span class="keyword">break</span>;                   <span class="comment">//找到了要删除的数据，直接跳出循环，提升效率</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//根据索引的判断，如果你要删除的数的下标和所给定索引的初值相同，那么肯定就是没找到。</span></span><br><span class="line">        <span class="keyword">if</span>(DeleteIndex == <span class="number">-1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"没有找到该数据，删除失败！\n"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//如果找到了，建立一个循环并且从下标开始，数组中的元素后面一个覆盖前面一个，且数组长度 - 1</span></span><br><span class="line">            <span class="keyword">for</span>(i = DeleteIndex; i &lt; count - <span class="number">1</span>; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                Nums[i] = Nums[i+<span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">                count--;</span><br><span class="line">            <span class="comment">//并打印输出后的结果</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"\n第%d个数据将被删除，删除后的结果为：\n"</span>, DeleteIndex + <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; count; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"%.2lf\t"</span>, Nums[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(JudgementNum == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"当前数据采集无误并保存！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"删除数据操作发生错误！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//注意：以下程序实现的是删除数据之后的插入操作</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n\n是否需要添加部分数据？\n提示：输入数字1进行添加操作，输入数字0保存当前数据。\n"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"请输入："</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;JudgementNum);</span><br><span class="line">    <span class="keyword">if</span>(JudgementNum == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"\n请输入要添加的数据："</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%lf"</span>, &amp;InsertNum);</span><br><span class="line">        <span class="comment">//进行添加操作，再数组长度+1</span></span><br><span class="line">        Nums[count] = InsertNum;</span><br><span class="line">        count++;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"\n添加数据后的结果为：\n"</span>);</span><br><span class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; count; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%.2lf\t"</span>, Nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(JudgementNum == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"当前数据已被保存。\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"添加数据操作发生错误\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>C中定义好一组数后，是通过访问元素下标来访问元素，所以正如注释数组如果找到了元素，删除以后，还做了被删除元素后面的数据，先去移动的操作，因为数组内存空间是连续的，你直接删除元素，但是数组空间会有空隙，要后面的元素不断填满，直到末尾数据也移动到了前一位即可。</p>
+<h2 id="3-单链表插入"><a href="#3-单链表插入" class="headerlink" title="3.单链表插入"></a>3.单链表插入</h2><p>下面，我们再讲一下单链表的插入，单链表的基本大家就算了解了。实际业务开始其实和我所举的例子还有差别，因为我们现在是直接调用。但是业务中，我们的代码是要给别人调用的，所以会有封装这样要求，但是其实也不难。我会在文章后面加上业务代码实现的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> ＜stdio.h＞</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> ＜malloc.h＞</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> ＜string.h＞</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 10 </span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">　<span class="keyword">char</span> name[<span class="number">20</span>];</span><br><span class="line">　<span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">link</span>;</span></span><br><span class="line">&#125;stud;</span><br><span class="line"></span><br><span class="line"><span class="function">stud * <span class="title">creat</span><span class="params">(<span class="keyword">int</span> n)</span> <span class="comment">/*建立单链表的函数*/</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　stud *p,*h,*s;</span><br><span class="line">　<span class="keyword">int</span> i;</span><br><span class="line">　<span class="keyword">if</span>((h=(stud *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(stud)))==<span class="literal">NULL</span>)</span><br><span class="line">　</span><br><span class="line">　h-＞name[0]='';</span><br><span class="line">　h-＞link=<span class="literal">NULL</span>;</span><br><span class="line">　p=h;</span><br><span class="line">　<span class="keyword">for</span>(i=<span class="number">0</span>;i＜n;i++)</span><br><span class="line">　&#123;</span><br><span class="line">　　<span class="keyword">if</span>((s= (stud *) <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(stud)))==<span class="literal">NULL</span>)</span><br><span class="line">　　</span><br><span class="line">　　p-＞link=s;</span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"请输入第%d个人的姓名:"</span>,i+<span class="number">1</span>);</span><br><span class="line">　　<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s-＞name);</span><br><span class="line">　　s-＞link=<span class="literal">NULL</span>;</span><br><span class="line">　　p=s;</span><br><span class="line">　&#125;</span><br><span class="line">　<span class="keyword">return</span>(h);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">stud * <span class="title">search</span><span class="params">(stud *h,<span class="keyword">char</span> *x)</span> <span class="comment">/*查找函数*/</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　stud *p;</span><br><span class="line">　<span class="keyword">char</span> *y;</span><br><span class="line">　p=h-＞link;</span><br><span class="line">　<span class="keyword">while</span>(p!=<span class="literal">NULL</span>)</span><br><span class="line">　&#123;</span><br><span class="line">　　y=p-＞name;</span><br><span class="line">　　<span class="keyword">if</span>(<span class="built_in">strcmp</span>(y,x)==<span class="number">0</span>)</span><br><span class="line">　　　<span class="keyword">return</span>(p);</span><br><span class="line">　　<span class="keyword">else</span> p=p-＞link;</span><br><span class="line">　&#125;</span><br><span class="line">　<span class="keyword">if</span>(p==<span class="literal">NULL</span>)</span><br><span class="line">　　<span class="built_in">printf</span>(<span class="string">"没有查找到该数据!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(stud *p)</span> <span class="comment">/*插入函数，在指针p后插入*/</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">　<span class="keyword">char</span> stuname[<span class="number">20</span>];</span><br><span class="line">　stud *s; <span class="comment">/*指针s是保存新结点地址的*/</span></span><br><span class="line">　<span class="keyword">if</span>((s= (stud *) <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(stud)))==<span class="literal">NULL</span>)</span><br><span class="line">　</span><br><span class="line">　<span class="built_in">printf</span>(<span class="string">"请输入你要插入的人的姓名:"</span>);</span><br><span class="line">　<span class="built_in">scanf</span>(<span class="string">"%s"</span>,stuname);</span><br><span class="line">　<span class="built_in">strcpy</span>(s-＞name,stuname); <span class="comment">/*把指针stuname所指向的数组元素拷贝给新结点的数据域*/</span></span><br><span class="line">　s-＞link=p-＞link; <span class="comment">/*把新结点的链域指向原来p结点的后继结点*/</span></span><br><span class="line">　p-＞link=s; <span class="comment">/*p结点的链域指向新结点*/</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">　<span class="keyword">int</span> number;</span><br><span class="line">　<span class="keyword">char</span> fullname[<span class="number">20</span>]; <span class="comment">/*保存输入的要查找的人的姓名*/</span></span><br><span class="line">　stud *head,*searchpoint;</span><br><span class="line">　number=N;</span><br><span class="line">　head=creat(number); <span class="comment">/*建立新链表并返回表头指针*/</span></span><br><span class="line">　<span class="built_in">printf</span>(<span class="string">"请输入你要查找的人的姓名:"</span>);</span><br><span class="line">　<span class="built_in">scanf</span>(<span class="string">"%s"</span>,fullname);</span><br><span class="line">　searchpoint=search(head,fullname); <span class="comment">/*查找并返回查找到的结点指针*/</span></span><br><span class="line">　insert(searchpoint); <span class="comment">/*调用插入函数*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-单链表封装实现"><a href="#4-单链表封装实现" class="headerlink" title="4.单链表封装实现"></a>4.单链表封装实现</h2><h3 id="4-1-单链表头文件"><a href="#4-1-单链表头文件" class="headerlink" title="4.1 单链表头文件"></a>4.1 单链表头文件</h3><p>这是封装的单链表头文件<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> LinkList;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">typedef struct _tag_LinkListNode LinkListNode;</span></span><br><span class="line"><span class="comment">struct _tag_LinkListNode</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">	LinkListNode* next;</span></span><br><span class="line"><span class="comment">&#125;;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">tag_LinkListNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> _<span class="title">tag_LinkListNode</span>* <span class="title">next</span>;</span></span><br><span class="line">&#125;LinkListNode;</span><br><span class="line"></span><br><span class="line"><span class="function">LinkList* <span class="title">LinkList_Create</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LinkList_Destroy</span><span class="params">(LinkList* <span class="built_in">list</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LinkList_Clear</span><span class="params">(LinkList* <span class="built_in">list</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">LinkList_Length</span><span class="params">(LinkList* <span class="built_in">list</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">LinkList_Insert</span><span class="params">(LinkList* <span class="built_in">list</span>, LinkListNode* node, <span class="keyword">int</span> pos)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">LinkListNode* <span class="title">LinkList_Get</span><span class="params">(LinkList* <span class="built_in">list</span>, <span class="keyword">int</span> pos)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">LinkListNode* <span class="title">LinkList_Delete</span><span class="params">(LinkList* <span class="built_in">list</span>, <span class="keyword">int</span> pos)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-1-单链表封装实现"><a href="#4-1-单链表封装实现" class="headerlink" title="4.1 单链表封装实现"></a>4.1 单链表封装实现</h3><p>这是封装实现<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdlib.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"string.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linklist.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">tag_LinkList</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="comment">//这个句柄里面，需要保存所有节点信息。需要有一个起始点</span></span><br><span class="line">	<span class="comment">//就是带头节点的链表。。。</span></span><br><span class="line">	LinkListNode header;</span><br><span class="line">	<span class="keyword">int</span> length;</span><br><span class="line">&#125;TLinkList;</span><br><span class="line"></span><br><span class="line"><span class="function">LinkList* <span class="title">LinkList_Create</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	TLinkList *ret = (TLinkList *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(TLinkList));</span><br><span class="line">	<span class="keyword">if</span> (ret == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//memset(ret, 0, sizeof(TLinkList));</span></span><br><span class="line">	ret-&gt;header.next = <span class="literal">NULL</span>;</span><br><span class="line">	ret-&gt;length = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LinkList_Destroy</span><span class="params">(LinkList* <span class="built_in">list</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">list</span> == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">free</span>(<span class="built_in">list</span>);</span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LinkList_Clear</span><span class="params">(LinkList* <span class="built_in">list</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	TLinkList *tList =<span class="literal">NULL</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">list</span> == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	tList = (TLinkList *)<span class="built_in">list</span>;</span><br><span class="line">	tList-&gt;length = <span class="number">0</span>;</span><br><span class="line">	tList-&gt;header.next = <span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">LinkList_Length</span><span class="params">(LinkList* <span class="built_in">list</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	TLinkList *tList = (TLinkList *)<span class="built_in">list</span>;</span><br><span class="line">	<span class="keyword">if</span> (tList == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> tList-&gt;length;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">LinkList_Insert</span><span class="params">(LinkList* <span class="built_in">list</span>, LinkListNode* node, <span class="keyword">int</span> pos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	TLinkList *tList  = <span class="literal">NULL</span>;</span><br><span class="line">	LinkListNode *current = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">	tList = (TLinkList *)<span class="built_in">list</span>;</span><br><span class="line">	<span class="comment">//准备环境让辅助指针变量 指向链表头节点</span></span><br><span class="line">	current = &amp;tList-&gt;header;</span><br><span class="line">	<span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;pos &amp;&amp;(current-&gt;next!=<span class="literal">NULL</span>); i++)</span><br><span class="line">	&#123;</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//让node节点链接后续链表</span></span><br><span class="line">	node-&gt;next = current-&gt;next ;</span><br><span class="line">	<span class="comment">//让前边的链表。链接node</span></span><br><span class="line">	current-&gt;next = node;</span><br><span class="line">	tList-&gt;length ++;	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">LinkListNode* <span class="title">LinkList_Get</span><span class="params">(LinkList* <span class="built_in">list</span>, <span class="keyword">int</span> pos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	TLinkList *tList  = <span class="literal">NULL</span>;</span><br><span class="line">	LinkListNode *current = <span class="literal">NULL</span>;</span><br><span class="line">	LinkListNode *ret = <span class="literal">NULL</span>;</span><br><span class="line">	tList = (TLinkList *)<span class="built_in">list</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">list</span> == <span class="literal">NULL</span> || pos &lt;<span class="number">0</span> ||pos&gt;=tList-&gt;length)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//准备环境让辅助指针变量 指向链表头节点</span></span><br><span class="line">	current = &amp;tList-&gt;header;</span><br><span class="line">	<span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;pos &amp;&amp;(current-&gt;next!=<span class="literal">NULL</span>); i++)</span><br><span class="line">	&#123;</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line">	ret = current-&gt;next;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">LinkListNode* <span class="title">LinkList_Delete</span><span class="params">(LinkList* <span class="built_in">list</span>, <span class="keyword">int</span> pos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	TLinkList *tList  = <span class="literal">NULL</span>;</span><br><span class="line">	LinkListNode *current = <span class="literal">NULL</span>;</span><br><span class="line">	LinkListNode *ret = <span class="literal">NULL</span>;</span><br><span class="line">	tList = (TLinkList *)<span class="built_in">list</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">list</span> == <span class="literal">NULL</span> || pos &lt;<span class="number">0</span> ||pos&gt;=tList-&gt;length)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//准备环境让辅助指针变量 指向链表头节点</span></span><br><span class="line">	current = &amp;tList-&gt;header;</span><br><span class="line">	<span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;pos &amp;&amp;(current-&gt;next!=<span class="literal">NULL</span>); i++)</span><br><span class="line">	&#123;</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line">	ret = current-&gt;next;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//删除算法</span></span><br><span class="line">	current-&gt;next =ret-&gt;next;</span><br><span class="line">	tList-&gt;length--;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-3-调用示例"><a href="#4-3-调用示例" class="headerlink" title="4.3 调用示例"></a>4.3 调用示例</h3><p>这是调用demo</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdlib.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"string.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linklist.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Teacher</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	LinkListNode node;</span><br><span class="line">	<span class="keyword">char</span> name[<span class="number">64</span>];</span><br><span class="line">	<span class="keyword">int</span> age;</span><br><span class="line">&#125;Teacher;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Teacher		t1,t2, t3;</span><br><span class="line">	<span class="keyword">int</span>			length, i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	LinkList		*<span class="built_in">list</span> = <span class="literal">NULL</span>;</span><br><span class="line">	t1.age = <span class="number">31</span>;</span><br><span class="line">	t2.age = <span class="number">32</span>;</span><br><span class="line">	t3.age = <span class="number">33</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="built_in">list</span> = LinkList_Create();</span><br><span class="line"></span><br><span class="line">	length = LinkList_Length(<span class="built_in">list</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//业务节点是teacher和算法分类的。。。。思想</span></span><br><span class="line">	LinkList_Insert(<span class="built_in">list</span>, (LinkListNode *)&amp;t1, LinkList_Length(<span class="built_in">list</span>));</span><br><span class="line">	LinkList_Insert(<span class="built_in">list</span>, (LinkListNode *)&amp;t2, LinkList_Length(<span class="built_in">list</span>));</span><br><span class="line">	LinkList_Insert(<span class="built_in">list</span>, (LinkListNode *)&amp;t3, LinkList_Length(<span class="built_in">list</span>));</span><br><span class="line"></span><br><span class="line">	<span class="comment">//遍历链表 </span></span><br><span class="line">	<span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;LinkList_Length(<span class="built_in">list</span>); i++)</span><br><span class="line">	&#123;</span><br><span class="line">		Teacher *tmp = (Teacher *)LinkList_Get(<span class="built_in">list</span>, i);</span><br><span class="line">		<span class="keyword">if</span> (tmp != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"age:%d "</span>, tmp-&gt;age);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span>(LinkList_Length(<span class="built_in">list</span>) &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		Teacher *tmp = (Teacher *)LinkList_Delete(<span class="built_in">list</span>, <span class="number">0</span>);</span><br><span class="line">		<span class="keyword">if</span> (tmp != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"age:%d "</span>, tmp-&gt;age);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	LinkList_Destroy(<span class="built_in">list</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    好了，我们下篇博客，双链表见！</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>技术共享,支持原创,欢迎打赏</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="hioleair 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="hioleair 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/单链表/" rel="tag"># 单链表</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/22/singlelinkedlist01/" rel="next" title="数据结构之单链表详解">
+                <i class="fa fa-chevron-left"></i> 数据结构之单链表详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="hioleair" />
+            
+              <p class="site-author-name" itemprop="name">hioleair</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/hioleair" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/hioleair" target="_blank" title="Twitter"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据结构系列之单链表二"><span class="nav-number">1.</span> <span class="nav-text">数据结构系列之单链表二</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-前言"><span class="nav-number">1.1.</span> <span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-单链表删除"><span class="nav-number">1.2.</span> <span class="nav-text">2.单链表删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-数组删除"><span class="nav-number">1.3.</span> <span class="nav-text">3.数组删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-单链表插入"><span class="nav-number">1.4.</span> <span class="nav-text">3.单链表插入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-单链表封装实现"><span class="nav-number">1.5.</span> <span class="nav-text">4.单链表封装实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-单链表头文件"><span class="nav-number">1.5.1.</span> <span class="nav-text">4.1 单链表头文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-单链表封装实现"><span class="nav-number">1.5.2.</span> <span class="nav-text">4.1 单链表封装实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-调用示例"><span class="nav-number">1.5.3.</span> <span class="nav-text">4.3 调用示例</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hioleair</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.2.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
