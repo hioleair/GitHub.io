@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="内部网关协议OSPF详解一前言​    上一篇文章中我们简单的了解了RIP距离矢量这种路由协议，现在开始我们目前使用最广泛，应用最多，也是最实用的内部网管协议OSPF的学习。OSPF协议是IETF（Internet网络工程部）基于SPF算法（shortest path first 最短路径优先）开发的协议。当时是大家想开发一款开放的最短路径优先协议，所以就叫做open shortest path">
+<meta name="keywords" content="网络协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IGP网络协议之OSPF详解一">
+<meta property="og:url" content="http://zhangxuanming.com/2018/10/01/ospfprotocl01/index.html">
+<meta property="og:site_name" content="Hioleair&#39;s Blogs">
+<meta property="og:description" content="内部网关协议OSPF详解一前言​    上一篇文章中我们简单的了解了RIP距离矢量这种路由协议，现在开始我们目前使用最广泛，应用最多，也是最实用的内部网管协议OSPF的学习。OSPF协议是IETF（Internet网络工程部）基于SPF算法（shortest path first 最短路径优先）开发的协议。当时是大家想开发一款开放的最短路径优先协议，所以就叫做open shortest path">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100501.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100502.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100503.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100505s.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100506s.png">
+<meta property="og:image" content="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100507s.png">
+<meta property="og:updated_time" content="2018-10-05T13:37:04.196Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IGP网络协议之OSPF详解一">
+<meta name="twitter:description" content="内部网关协议OSPF详解一前言​    上一篇文章中我们简单的了解了RIP距离矢量这种路由协议，现在开始我们目前使用最广泛，应用最多，也是最实用的内部网管协议OSPF的学习。OSPF协议是IETF（Internet网络工程部）基于SPF算法（shortest path first 最短路径优先）开发的协议。当时是大家想开发一款开放的最短路径优先协议，所以就叫做open shortest path">
+<meta name="twitter:image" content="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100501.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://zhangxuanming.com/2018/10/01/ospfprotocl01/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>IGP网络协议之OSPF详解一 | Hioleair's Blogs</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hioleair's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-about"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-categories"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archives"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-tags" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhangxuanming.com/2018/10/01/ospfprotocl01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hioleair">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hioleair's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IGP网络协议之OSPF详解一
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-01 19:23:38" itemprop="dateCreated datePublished" datetime="2018-10-01T19:23:38+08:00">2018-10-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-05 21:37:04" itemprop="dateModified" datetime="2018-10-05T21:37:04+08:00">2018-10-05</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/IGP/" itemprop="url" rel="index"><span itemprop="name">IGP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="内部网关协议OSPF详解一"><a href="#内部网关协议OSPF详解一" class="headerlink" title="内部网关协议OSPF详解一"></a>内部网关协议OSPF详解一</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​    上一篇文章中我们简单的了解了RIP距离矢量这种路由协议，现在开始我们目前使用最广泛，应用最多，也是最实用的内部网管协议OSPF的学习。OSPF协议是IETF（Internet网络工程部）基于SPF算法（shortest path first 最短路径优先）开发的协议。当时是大家想开发一款开放的最短路径优先协议，所以就叫做open shortest path frist 这也就是OSPF名字全称。下面我们开始正式了解OSPF吧。</p>
+<h3 id="1-OSPF基础"><a href="#1-OSPF基础" class="headerlink" title="1 OSPF基础"></a>1 OSPF基础</h3><p>​    OSPF协议相对的确比较复杂，我们会花不少时间讲解其中比较重要的几个概念，我们需要注意的就是也是最重要的俩个就是OSPF报文类型以及LSA类型。</p>
+<p>​    OSPF允许在一个自治系统里划分区域的做法，相邻的网络和它们相连的路由器组成一个区域(Area)。每一个区域有该区域自己拓扑数据库，该数据库对于外部的区域是不可见的，每个区域内部路由器的链路状态信息数据库实际上只包含着该区域内的链路状态信息，他们也不能详细地知道外部的链接情况，在同一个区域内的路由器拥有同样的拓扑数据库。和多个区域相连的路由器拥有多个区域的链路状态信息库。划分区域的方法减少了链路状态信息数据库的大小、并极大地减少了路由器间交换状态信息的数量。</p>
+<h4 id="1-1-OSPF报文类型及基本特性"><a href="#1-1-OSPF报文类型及基本特性" class="headerlink" title="1.1 OSPF报文类型及基本特性"></a>1.1 OSPF报文类型及基本特性</h4><p>OSPF协议的基本特性如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.OSPF是IGP协议，是Link-State协议，基于IP 协议之上，协议号为89。</span><br><span class="line"></span><br><span class="line">2.采用SPF算法（Dijkstra算法）计算最佳路径。</span><br><span class="line"></span><br><span class="line">3.能够快速响应网络变化，和RIP不一样，OSPF只计算更新的那一部分路由，不会每次都整表进行更新，并且他是触发更新，这一部分会在报文交互过程中详细讲解。</span><br><span class="line"></span><br><span class="line">4.支持等价的负载均衡。</span><br></pre></td></tr></table></figure>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100501.png" alt="OSPF报文"></p>
+<p>ospf报文会有五种报文类型，每种报文的功能如图：</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100502.png" alt="报文详情"></p>
+<p>讲解报文之前这里说明一下，ospf交互状态有七种，然后又有邻居和邻接俩个概念。</p>
+<p>​    其中OSPF路由器启动后，通过OSPF接口向外发送Hello报文。并且收到Hello报文的OSPF路由器会检查报文中所定义的参数，如果双方一致就会形成邻居关系。</p>
+<p>​    邻接是只有当双方成功交换DD报文，交换LSA并达到LSDB的同步之后，才形成真正意义上的邻接关系</p>
+<p>我们来通过一系列图片认识这一过程：</p>
+<p><img src="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100503.png" alt="报文详情"><br>这是建立邻居的开始<br><img src="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100505s.png" alt="报文详情"><br>这是邻接关系的开始<br><img src="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100506s.png" alt="报文详情"><br>达到同步建立完毕<br><img src="http://p7u7bb0ej.bkt.clouddn.com/hexo2018100507s.png" alt="报文详情"></p>
+<h2 id="2-OSPF详情"><a href="#2-OSPF详情" class="headerlink" title="2 OSPF详情"></a>2 OSPF详情</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Hello报文：周期性发送，用来发现和维持OSPF邻居关系。内容包括一些定时器的数值、DR（Designated Router，指定路由器）、BDR（Backup DesignatedRouter，备份指定路由器）以及自己已知的邻居。</span><br><span class="line">DD（Database Description，数据库描述）报文：描述了本地LSDB中每一条LSA的摘要信息，用于两台路由器进行数据库同步。</span><br><span class="line">LSR（Link State Request，链路状态请求）报文：向对方请求所需的LSA。两台路由器互相交换DD报文之后，得知对端的路由器有哪些LSA是本地的LSDB所缺少的，这时需要发送LSR报文向对方请求所需的LSA。内容包括所需要的LSA的摘要。</span><br><span class="line">LSU（Link State Update，链路状态更新）报文：向对方发送其所需要的LSA。</span><br><span class="line">LSAck（Link StateAcknowledgment，链路状态确认）报文：用来对收到的LSA进行确认。内容是需要确认的LSA的Header（一个报文可对多个LSA进行确认）。</span><br></pre></td></tr></table></figure>
+<p>表1  OSPF路由协议包类型</p>
+<table>
+<thead>
+<tr>
+<th>包类型</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hello协议包</td>
+<td>发现和维护邻居</td>
+</tr>
+<tr>
+<td>数据库描述</td>
+<td>汇总数据库内容</td>
+</tr>
+<tr>
+<td>链路状态请求</td>
+<td>数据库下载</td>
+</tr>
+<tr>
+<td>链路状态更新</td>
+<td>数据库上载</td>
+</tr>
+<tr>
+<td>链路状态确认</td>
+<td>扩散确认</td>
+</tr>
+</tbody>
+</table>
+<p>​                                                                           </p>
+<h3 id="2-1-五类报文"><a href="#2-1-五类报文" class="headerlink" title="2.1 五类报文"></a>2.1 五类报文</h3><h4 id="2-1-1-hello报文"><a href="#2-1-1-hello报文" class="headerlink" title="2.1.1 hello报文"></a>2.1.1 hello报文</h4><p>Hello协议用于寻找和维护路由器所连网络上的邻居关系。通过周期性地发出Hello包，来确定和维护邻居路由器接口是否仍在起作用。Hello包被发送到网络上的每个活动的路由器接口。在广播和非广播的多点访问的网络上，DR和BDR的选举也是通过Hello包来完成的。在不同的物理网络上，Hello包的目的地址是不同的；在点到点和广播网络上，其目的地址是AllSPFRouter(224.0.0.5)；在虚链路上是单播，也就是从虚链路的源端直接发送到链路的另一端；而在点到多点的网络上，分离的Hello包分别发送到相连的每一个邻居；在非广播的多点访问网络上，Hello包的发送要看各个路由器的配置信息。 </p>
+<p>Hello协议的作用是发现和维护邻居关系、选举DR和BDR。在广播型网络上每一个路由器周期性地广播Hello包（目的地址是AllSPFRouter），使得它能够被邻居发现。每一个路由器的每个接口都有一个相关的接口数据结构，当Hello包里的特定参数（如Area ID, Authentication,<br>Network Mask, HelloInterval, RouterDeadInterval 和Options<br>values）相匹配时，Hello包才能被接收。Hello包中包含着本路由器所希望选举的DR和该DR的优先级、BDR和BDR的优先级、还有本路由器通过交换Hello协议包所“看”到的其它路由器。从Hello包里得到的邻居被放在路由器的邻居列表里。当从接收到的Hello包里看到自己时，就建立了双向通信。建立了双向通信的路由器才有可能建立连接（adjacency）关系，能否建立连接关系，要看连接两个邻居的网络的类型。通过Hello协议包的交换，得知了希望成为DR和BDR的路由器以及他们的优先级，下一步的工作是选举DR和BDR。</p>
+<h4 id="2-1-2-DD报文"><a href="#2-1-2-DD报文" class="headerlink" title="2.1.2 DD报文"></a>2.1.2 DD报文</h4><p>​    在OSPF中，保持区域范围内的所有路由器的链路状态数据库同步极为重要。通过建立并保持邻接关系，OSPF使具有邻接关系的路由器的数据库同步，进而保证了区域范围内所有路由器数据库同步。数据库同步过程从建立邻接关系开始，在完全邻接关系已建立时完成。当路由器的端口状态为ExStart时，路由器通过发一个空的数据库描述包来协商“主从”关系以及数据库描述包的序号，Router ID大的为主，反之为从。序号也以主路由器产生的初始序号为基准，以后的每一次数据库描述包的发送，序号都要加1。主路由器发送链路状态描述包（数据库描述包），从路由器接收链路状态描述包后来检查自己的链路状态数据库，如果发现链路状态数据库里没有改项，则进行添加该项，并将该项加入链路状态请求列表，准备向主路由器请求新的链路状态，并向主路由器发送确认包。主路由器收到链路状态请求包时，发出链路状态的更新包，进行链路状态的更新。从路由器收到链路状态更新包后发出确认包，进行确认，表示收到该更新包，否则主路由器就在重发定时器的启动下进行重复发送。每一个路由器向它的邻居发送数据库描述包来描述自己的数据库，每一个数据库描述包由一组链路状态广播组成，邻居路由器接收该数据库描述包，并返回确认消息。这两个路由器形成了一种“主从”关系，只有主路由器能够向从路由器发送数据库描述包，反之则不行。当所有的数据库请求包都已被主路由器处理后，主从路由器也就进入了邻接完成状态。当DR与整个区域内所有的路由器都完成邻接关系时，整个区域中所有路由器的数据库也就同步了。</p>
+<h4 id="2-1-3-LSR报文"><a href="#2-1-3-LSR报文" class="headerlink" title="2.1.3 LSR报文"></a>2.1.3 LSR报文</h4><p>两台路由器互相交换过DD报文之后，知道对端的路由器有哪些LSA是本地的LSDB所缺少的和哪些LSA是已经失效的，这时需要发送LSR报文（Link State Request Packet）向对方请求所需的LSA<br>内容包括所需要的LSA的摘要。<br>LS type、Link State ID和Advertising Router可以唯一标识出一个LSA，当两个LSA一样时，需要根据LSA中的LS sequence number、LS checksum和LS age来判断出所需要LSA的新旧。</p>
+<h4 id="2-1-4-LSU报文"><a href="#2-1-4-LSU报文" class="headerlink" title="2.1.4 LSU报文"></a>2.1.4 LSU报文</h4><p>用来向对端路由器发送所需要的LSA，内容是多条LSA（全部内容）的集合。<br>LSU报文（Link State Update Packet）在支持组播和广播的链路上是以组播形式将LSA泛洪出去。<br>为了实现Flooding的可靠性传输，需要LSAck报文对其进行确认。对没有收到确认报文的LSA进行重传，重传的LSA是直接发送到邻居的。</p>
+<h4 id="2-1-5-LSAck报文"><a href="#2-1-5-LSAck报文" class="headerlink" title="2.1.5 LSAck报文"></a>2.1.5 LSAck报文</h4><p>用来对接收到的LSU报文进行确认。<br>内容是需要确认的LSA的Header（一个LSAck报文可对多个LSA进行确认）。<br>LSAck（Link State Acknowledgment Packet）报文根据不同的链路以单播或组播的形式发送</p>
+<p>当链路状态数据库达到同步以后，各个路由器就利用同步的数据库以自己为根节点来并行地计算最优树，从而形成本地的路由表。</p>
+<p>当收到IP包需要查询路由表时，按照以下规则完成路由查找：</p>
+<p>（1）在路由表中选择相匹配的路由记录。相匹配的记录是指需转发IP包的目的地址“落在”该匹配路由记录的目的地址范围内（该匹配记录可能有多个）。如：如果有路由表项为172.16.64.0/18，172.16.64.0/24和172.16.64.0/27供目的地址172.16.64.205选择，则选择最后一项。因为它是最匹配的一个。也就是说要选择一个掩码最长的一个。缺省路由是最后要选择的，因为它的掩码最短。如果没有匹配的路由表项供选择，则有ICMP发送一个目标不可到达的控制报文，而且该IP包将被丢弃。</p>
+<p>（2）如果有多个路径匹配，根据路由的类型来进行进一步的选择，它们的优先级依次为区域内的路径，区域间得额路径，E1型的外部路径，E2型的外部路径。</p>
+<p>（3）如果有类型和费用都相等的多条路径，则OSPF将同时利用它们。</p>
+<p>（4）最后利用所寻找的路径来进行IP包的转发。</p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3 总结"></a>3 总结</h2><p>OSPF协议内容比较多，今天讲的可能有点乱，下一篇我会整理好把其他关键点打通，让大家更明白这一过程，今天我们记住五大报文类型即可。hello报文，DD报文，LSR报文，LSU报文，LSAck报文。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>技术共享,支持原创,欢迎打赏</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="hioleair 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="hioleair 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/网络协议/" rel="tag"># 网络协议</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/01/RIPprotocl01/" rel="next" title="IGP网络协议之RIP详解一">
+                <i class="fa fa-chevron-left"></i> IGP网络协议之RIP详解一
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="hioleair" />
+            
+              <p class="site-author-name" itemprop="name">hioleair</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/hioleair" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/hioleair" target="_blank" title="Twitter"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#内部网关协议OSPF详解一"><span class="nav-number">1.</span> <span class="nav-text">内部网关协议OSPF详解一</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-OSPF基础"><span class="nav-number">1.1.1.</span> <span class="nav-text">1 OSPF基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-OSPF报文类型及基本特性"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">1.1 OSPF报文类型及基本特性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-OSPF详情"><span class="nav-number">1.2.</span> <span class="nav-text">2 OSPF详情</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-五类报文"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 五类报文</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-hello报文"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">2.1.1 hello报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-DD报文"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">2.1.2 DD报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-3-LSR报文"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">2.1.3 LSR报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-4-LSU报文"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">2.1.4 LSU报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-5-LSAck报文"><span class="nav-number">1.2.1.5.</span> <span class="nav-text">2.1.5 LSAck报文</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-总结"><span class="nav-number">1.3.</span> <span class="nav-text">3 总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hioleair</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.2.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
